@@ -8,6 +8,11 @@ class Sender {
         this.initialize()
     }
 
+    async sendText(to: string, body: string) {
+        
+        this.client.sendText(to, body)
+    }
+
     private initialize() {
         const qrcode = (bae64Qrimg: string) => {}
 
@@ -15,6 +20,8 @@ class Sender {
 
         const start = (client: Whatsapp) => {
             this.client = client
+
+            this.sendText('5519900000000@c.us', 'Olá, tudo bem?')
         }
 
         create("zap-bot", qrcode, status)
