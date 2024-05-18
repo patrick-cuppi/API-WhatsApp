@@ -1,8 +1,22 @@
 import { create, Whatsapp, Message, SocketState } from "venom-bot";
 import  parsePhoneNumber, { isValidPhoneNumber }  from "libphonenumber-js";
 
+export type QRCode = {
+    base64Qr: string
+    asciiQR: string
+}
 class Sender {
     private client: Whatsapp
+    private isConnected: boolean
+    private qrcode: QRCode
+
+    get connected(): boolean {
+        return this.isConnected
+    }
+
+    get qrCode(): QRCode {
+        return this.qrcode
+    }
 
     constructor() {
         this.initialize()
@@ -21,14 +35,20 @@ class Sender {
     }
 
     private initialize() {
-        const qrcode = (bae64Qrimg: string) => {}
+        const qrcode = (base64Qr: string, asciiQR: string) => {
+            this.qrcode = { base64Qr, asciiQR }
+        }
 
-        const status = (statusSession: string) => {}
+        const status = (statusSession: string) => {
+            this.isConnected = ["isLogged", "qrReadSuccess", "chatsAvailable"].includes(statusSession)
+        }
 
         const start = (client: Whatsapp) => {
             this.client = client
 
-            this.sendText('5519900000000@c.us', 'Olá, tudo bem?')
+            client.onStateChange((state) => {
+                this.isConnected = state === SocketState.CONNECTED
+            })
         }
 
         create("zap-bot", qrcode, status)

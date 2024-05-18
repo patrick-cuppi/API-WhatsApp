@@ -9,12 +9,18 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
 app.get('/status', (req: Request, res: Response) => {
-
+    return res.send({
+        qr_code: sender.qrCode,
+        connected: sender.connected
+    })
 })
 
 app.post('/send', async (req: Request, res: Response) => {
+    const { number, message } = req.body
+
     try {
-        await sender.sendText('5519900000000@c.us', 'Olá, tudo bem?')
+
+        await sender.sendText(number, message)
 
         return res.status(200).json()
     } catch (error) {
